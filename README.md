@@ -8,3 +8,6 @@ This project seeks to...
     - `output_data`: Generated output data
     - `get_data.py`: Function for parsing data from YOLO results to readable txt file
     - `yolo_world.py`: Main script for inference, data collection, and visualization
+  - `Other sub folder`:
+  - `Other sub folder`:
+  - `Other sub folder`:
