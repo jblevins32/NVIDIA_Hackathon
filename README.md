@@ -8,7 +8,7 @@ This project seeks to...
     - `output_data`: Generated output data
     - `get_data.py`: Function for parsing data from YOLO results to readable txt file
     - `yolo_publisher.py`: None. May delete.
-    - `yolo_subscriber.py`: Node to run YOLO tracking (runs yolo_world_ROS.py)
+    - `yolo_subscriber.py`: Subscriber node to run YOLO tracking (runs yolo_world_ROS.py)
     - `yolo_world.py`: Main script for general inference, data collection, and visualization
     - `yolo_world_ROS.py`: Main script for ROS implementation for inference and data collection
   - `Other sub folder`:
