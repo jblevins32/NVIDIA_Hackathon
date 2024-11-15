@@ -7,7 +7,11 @@ This project seeks to...
     - `models`: YOLO models (.pth files)
     - `output_data`: Generated output data
     - `get_data.py`: Function for parsing data from YOLO results to readable txt file
-    - `yolo_world.py`: Main script for inference, data collection, and visualization
+    - `yolo_publisher.py`: None. May delete.
+    - `yolo_subscriber.py`: Node to run YOLO tracking (runs yolo_world_ROS.py)
+    - `yolo_world.py`: Main script for general inference, data collection, and visualization
+    - `yolo_world_ROS.py`: Main script for ROS implementation for inference and data collection
   - `Other sub folder`:
   - `Other sub folder`:
   - `Other sub folder`:
+- `environment.yaml`: environment for running the code. Not sure if we need this.
