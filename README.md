@@ -3,8 +3,8 @@ This project seeks to...
 # File Structure:
 - `src`: Source code
   - `YOLO`: You only look once model for object tracking
-    - `imgs`: images to process or saved images are all stored here
-    - `models`: YOLO models (.pth files)
+    - `imgs`: images to process and saved images are all stored here
+    - `models`: YOLO models (.pt files)
     - `output_data`: Generated output data
     - `get_data.py`: Function for parsing data from YOLO results to readable txt file
     - `yolo_publisher.py`: None. May delete.
