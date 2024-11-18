@@ -1,9 +1,12 @@
 import rclpy
-from ROS.laser_subscriber.laser_subscriber import laser_subscriber
-from sensor_msgs.msg import LaserScan
-
 import torch
 
+from ROS.laser_subscriber.laser_subscriber.laser_subscriber import LaserScanSubscriber
+from ROS.odom_subscriber.odom_subscriber.odom_subscriber import OdomSubscriber
+
+from sensor_msgs.msg import LaserScan
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Point
 
 def LocateFromBB(yoloData,lidarScan):
     '''
@@ -40,8 +43,11 @@ def local2global(distance,angle,position):
 def main(args=None):
     rclpy.init(args=args)
 
-    laser_sub_node = laser_subscriber.LaserScanSubscriber()
+    laser_sub_node = LaserScanSubscriber()
+    odom_sub_node = odom_subscriber.OdomSubscriber()
+
     rclpy.spin(laser_sub_node)
+    rclpy.spin(odom_sub_node)
 
     scan = LaserScan()
     scan = laser_sub_node.scan_current
