@@ -1,15 +1,14 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
-from sensor_msgs.msg import LaserScan
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Point
 
-
-class LaserScanSubscriber(Node):
-    scan_current = LaserScan()
+class OdomSubscriber(Node):
 
     def __init__(self):
-        super().__init__('laser_scan_subscriber')
-
+        super().__init__('odom_subscriber')
+        position = Point()
         qos = QoSProfile(
                 reliability = ReliabilityPolicy.BEST_EFFORT,
                 durability = DurabilityPolicy.VOLATILE,
@@ -17,27 +16,27 @@ class LaserScanSubscriber(Node):
                 depth=1
         )
         self.subscription = self.create_subscription(
-            LaserScan,
-            '/scan',
+            Odometry,
+            '/odom',
             self.listener_callback,
             qos
         )
         self.subscription
 
-    def listener_callback(self, msg: LaserScan):
+    def listener_callback(self, msg: Odometry):
         #self.get_logger().info('Laserscan Received')
         #self.get_logger().info(f"Range data: {msg.ranges[:5]}")
-        scan_current = msg
+        position = msg.pose.pose.position
         
 def main(args=None):
     rclpy.init(args=args)
 
-    laser_scan_subscriber = LaserScanSubscriber()
+    odom_subscriber = OdomSubscriber()
 
-    rclpy.spin(laser_scan_subscriber)
+    rclpy.spin(odom_subscriber)
 
     # Shutdown ROS 2
-    laser_scan_subscriber.destroy_node()
+    odom_subscriber.destroy_node()
     rclpy.shutdown()
 
 
