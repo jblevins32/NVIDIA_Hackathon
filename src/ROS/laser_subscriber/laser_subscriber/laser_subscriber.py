@@ -1,15 +1,24 @@
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 from sensor_msgs.msg import LaserScan
 
 class LaserScanSubscriber(Node):
+
     def __init__(self):
         super().__init__('laser_scan_subscriber')
+
+        qos = QoSProfile(
+                reliability = ReliabilityPolicy.BEST_EFFORT,
+                durability = DurabilityPolicy.VOLATILE,
+                history = HistoryPolicy.KEEP_LAST,
+                depth=1
+        )
         self.subscription = self.create_subscription(
             LaserScan,
             '/scan',
             self.listener_callback,
-            10
+            qos
         )
         self.subscription
 

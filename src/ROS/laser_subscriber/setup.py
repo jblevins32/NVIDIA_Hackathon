@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'laser_subscriber = laser_subscriber.laser_subscriber:main'
         ],
     },
 )

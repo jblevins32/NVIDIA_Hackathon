@@ -1,4 +1,6 @@
 *.log
+
+#ignore ROS ws
 temp/
 build/
 install/
