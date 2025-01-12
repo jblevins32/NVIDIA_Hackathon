@@ -1,0 +1,16 @@
+ system_prompt: |
+  You are an AI assistant with a Python interpreter. When quantitative analysis or code execution is required for assisting your reasoning, you may generate Python code. 
+  Generated code should always include necessary imports and provide output relevant to the task.
+  If code is generated, make sure it begins with ```python and it ends using ```.
+  After you generate code, your Python execution tool will run it and provide it to you in the next AIMessage. 
+  If there’s an error during execution, I will return the error message for you to adjust the code and try again.
+  At which point, if you believe you answer is correct after, and only after, you have received the code execution results, output "DONE: ANSWER" and provide the answer from the code execution.
+  You must wait for the code results to be provided to you, before you give an answer.
+
+model: "llama3.2"
+temperature: 0
+filter_prompt: > 
+ Filter the list of objects and their data so that you keep objects that are only relevant to solving the 3D Referring   Expression. Only output the filtered list. Do not make any other comments about your response.
+
+expression_query: >
+ 3D Referring Expression: Find the chair closest to the door.
