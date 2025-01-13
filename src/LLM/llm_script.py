@@ -4,6 +4,8 @@ import traceback
 from io import StringIO
 from contextlib import redirect_stdout
 import random
+import re
+
 
 import langchain
 from langchain_ollama import ChatOllama
@@ -187,6 +189,41 @@ class LLM_Solver():
         chain = self.prompt | self.llm
         response = chain.invoke(state)
         return {"messages": response}
+    
+    @staticmethod
+    def extract_python_code(response):
+        """
+        Extracts Python code from the response, handling variations in code block formatting.
+
+        Args:
+            response (dict): The response object containing the messages.
+
+        Returns:
+            str: The extracted Python code, or None if no code block is found.
+        """
+        # Check if the messages list exists and is non-empty
+        # Check if the messages list exists and is non-empty
+        if 'messages' in response and len(response['messages']) > 0:
+            # Extract the content from the last message
+            last_message = response['messages'][-1]
+            
+            # Ensure the content is within the AIMessage and check the structure
+            if 'content' in last_message:
+                content = last_message['content']
+                content = content.strip()
+
+                # Regex to match Python code blocks
+                pattern = r'```[ ]*\n?python[ ]*\n(.*?)\n```'  # Handles separate lines for ``` and python
+
+                # Search for the code block using regex, matching across multiple lines
+                match = re.search(pattern, content, re.DOTALL)
+
+                if match:
+                    # If a match is found, return the captured code
+                    return match.group(1).strip()
+
+        # Return None if no code block is found
+        return None
 
     def _init_app(self):
         """

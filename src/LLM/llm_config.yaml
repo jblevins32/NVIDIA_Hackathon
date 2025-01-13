@@ -1,11 +1,10 @@
 expression_query: '3D Referring Expression: Find the chair closest to the door.'
-
-filter_prompt: 'Filter the list of objects and their data so that you keep objects
+filter_prompt: Filter the list of objects and their data so that you keep objects
   that are only relevant to solving the 3D Referring Expression. Only output the filtered
   list. Do not make any other comments about your response. Do not output python code
   for this filtering, simply remove items that are not necessary to solve the 3D Referring
-  Expression.'
-last_thread_id: 1234
+  Expression.
+last_thread_id: '8892'
 model: llama3.2
 system_prompt: "You are an AI assistant with a Python interpreter. When quantitative\
   \ analysis or code execution is required for assisting your reasoning, you may generate\
@@ -23,4 +22,4 @@ system_prompt: "You are an AI assistant with a Python interpreter. When quantita
   \ to filter the recieved sensor data. First you will filter the list. Then after\
   \ outputting the filtered list you will solve the expression.\n"
 temperature: 0
-thread_id: random
+thread_id: '8892'
