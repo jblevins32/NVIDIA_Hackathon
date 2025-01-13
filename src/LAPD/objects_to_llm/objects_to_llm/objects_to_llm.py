@@ -78,20 +78,21 @@ class ObjectsInfoPublisher(Node):
         y = odom.pose.pose.position.y
         z_angle = odom.pose.pose.orientation.z
         self.position = [x, y, z_angle] #
+        #print(self.position)
 
     def _yolo_callback(self, boxes):
         #ID Classification Confidence Top_left_x top_left_y bot_right_x bot_right_y
         # Process YOLO data and correlate with LIDAR data
         num_cols = 7
         bbox_array = np.array(boxes.data).reshape(-1, num_cols)
-        num_objects = bbox_array.shape[0]# Number of objects from yolo
+        #num_objects = bbox_array.shape[0]# Number of objects from yolo
         for row in bbox_array:
             # Translate bounding box center in pixel space to a local angle
             angle = self._pixel_to_deg((row[3] + row[5])/2)
             # Perform interpolation to get distance for detected objects
             distance = np.interp(angle, self._angles, self._ranges)
-            if len(distance) > 1:
-                distance = distance[0]
+            #if len(distance) > 1:
+            #    distance = distance[0]
             #TODO: Convert to string (See yolo world documentation v2)
             object_class = int(row[1])
             # ID Class Confidence x_world y_world z_world
@@ -99,7 +100,7 @@ class ObjectsInfoPublisher(Node):
             object_string = f"{int(row[0])} class:{object_class} x:{distance*math.cos(math.radians(angle + self.position[2])) + self.position[0]} y:{distance*math.sin(math.radians(angle + self.position[2])) + self.position[1]}\n" #distance:{distance} angle:{angle}\n" #TODO: Update with correct absolute coordinates
             # Concatenate string to Objects.info
             self._objects_info += object_string
-        pass
+        #print(self._objects_info)
 
     # Process LIDAR data and filter out NaN values
     def _LIDAR_callback(self, scan):
@@ -108,7 +109,7 @@ class ObjectsInfoPublisher(Node):
         mask = np.logical_not(np.isnan(self._ranges))
         self._ranges = self._ranges[mask]
         self._angles = self._angles[mask]
-        pass
+        #print(self._ranges)
 
     # Publish the objects info once teleop is completed
     def _completion_callback(self, completion_status):
