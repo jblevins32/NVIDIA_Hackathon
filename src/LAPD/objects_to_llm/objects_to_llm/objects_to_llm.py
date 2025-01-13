@@ -85,7 +85,7 @@ class ObjectsInfoPublisher(Node):
         num_cols = 7
         bbox_array = np.array(boxes.data).reshape(-1, num_cols)
         num_objects = bbox_array.shape[0]# Number of objects from yolo
-        for row in range(num_objects):
+        for row in bbox_array:
             # Translate bounding box center in pixel space to a local angle
             angle = self._pixel_to_deg((row[3] + row[5])/2)
             # Perform interpolation to get distance for detected objects
@@ -96,7 +96,7 @@ class ObjectsInfoPublisher(Node):
             object_class = int(row[1])
             # ID Class Confidence x_world y_world z_world
             # Calculate world coordinates and append to objects info
-            object_string = f"{int(row[0])} class:{object_class} x:{distance*math.cos(math.radians(angle + self.position[2])) + self.position[0]} y:{distance*math.sin(math.radians(angle + self.position[2])) + self.position[1]} distance:{distance} angle:{angle}\n" #TODO: Update with correct absolute coordinates
+            object_string = f"{int(row[0])} class:{object_class} x:{distance*math.cos(math.radians(angle + self.position[2])) + self.position[0]} y:{distance*math.sin(math.radians(angle + self.position[2])) + self.position[1]}\n" #distance:{distance} angle:{angle}\n" #TODO: Update with correct absolute coordinates
             # Concatenate string to Objects.info
             self._objects_info += object_string
         pass
