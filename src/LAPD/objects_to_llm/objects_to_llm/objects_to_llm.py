@@ -116,10 +116,13 @@ class ObjectsInfoPublisher(Node):
         if completion_status._data == True:
             # Send objects_info string to the LLMSolverPublisher
             # Concetante turtlebot position in world
-            self._objects_info += f"\n-1 Turtlebot 1 x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n"
+            self._objects_info += f"\n-1 Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n"
             # Trim Whitespace
             stripped = self._objects_info.strip()
-            self._objects_info_publisher.publish(String(stripped))
+            msg = String()
+            msg.data = stripped
+            self._objects_info_publisher.publish(msg)
+        #print(stripped)
 
     # Convert pixel position to angle in degrees
     def _pixel_to_deg(self, pixel):
