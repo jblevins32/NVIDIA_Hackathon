@@ -32,6 +32,10 @@ def angles2x(left,right):
     Translate angles on Lidar scan to xy on camera image.
     '''
     range = left - right
+    
+def x2angles():
+
+    pass
 
 def local2global(distance,angle,position):
     '''
@@ -63,7 +67,5 @@ def main(args=None):
 
     # find which bounding box 
 
-
-
-
-    
+if __name__ == '__main__':
+    main()
