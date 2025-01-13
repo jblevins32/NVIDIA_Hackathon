@@ -231,8 +231,8 @@ class LLM_Solver():
         if self.expression_query.lower() == 'exit':
             print('Exiting Dialogue.')
             return
-        print('You: '+self.expression_query+'\n'+self.filter_prompt+'\n Here is the sensor data to use to solve the 3D referring expression:'+input_string)
-        input_messages = [HumanMessage(self.expression_query+'\n'+self.filter_prompt+'\n Here is the sensor data to use to solve the 3D referring expression:'+input_string)]
+        print('You: '+self.expression_query+'\n'+self.filter_prompt+'\n Here is the sensor data to use to solve the 3D referring expression:\n'+input_string)
+        input_messages = [HumanMessage(self.expression_query+'\n'+self.filter_prompt+'\n Here is the sensor data to use to solve the 3D referring expression:\n'+input_string)]
         response = self.app.invoke({'messages': input_messages},config)
         print("\n\nResponse:",response['messages'][-1].content,'\n')
         filtered_string = response['messages'][-1].content
