@@ -167,7 +167,7 @@ class LLM_Solver():
         memory = MemorySaver()
         self.app = self.workflow.compile(checkpointer=memory)
 
-    def _run(self, input_string):
+    def run(self, input_string):
         config = {"configurable": {"thread_id": f"{self.thread_id}"}}
         print('Object Info received')
         # Exit if user types 'exit'
