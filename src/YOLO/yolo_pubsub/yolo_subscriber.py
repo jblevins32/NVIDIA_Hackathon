@@ -4,7 +4,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from std_msgs.msg import Float32MultiArray
 from cv_bridge import CvBridge, CvBridgeError
-from yolo_pubsub.yolo_world_ROS import yolo_cls
+from yolo_world_ROS import yolo_cls
 import numpy as np
 
 # building the class which inherits from ROS2 node class
