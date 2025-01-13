@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSReliabilityPolicy, QoSHistoryPolicy
-from llm_script.py import LLM_Solver
+from llm_script import LLM_Solver
 
 from std_msgs.msg import String
 
