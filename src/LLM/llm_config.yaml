@@ -5,8 +5,10 @@ system_prompt: |
   2. Solve: After filtering, analyze the relevant objects to determine the solution.
   Code Requirements:
   - When generating Python code, ensure it begins with ```python and ends with ```.
-  - All generated Python code should start with 3 backticks followed by the word python (e.g. ```python)
+  - All generated Python code should start with 3 backticks and the word python (e.g. "```python")
   - All generated Python code should end with 3 backticks (e.g. ```)
+  - PLEASE remember to put the word "python" after the first 3 backticks as shown in the examples. This is critical.
+  - There should be NO whitespace or newlines between the ``` and python. This is critical.
   - Example Python Code: 
     ```python
     print("Hello World")
