@@ -97,7 +97,7 @@ class ObjectsInfoPublisher(Node):
             object_class = self._yolo_class(int(row[1]))
             # ID Class Confidence x_world y_world z_world
             # Calculate world coordinates and append to objects info
-            object_string = f"{int(row[0])} class:{object_class} x:{distance*math.cos(math.radians(angle + self.position[2])) + self.position[0]} y:{distance*math.sin(math.radians(angle + self.position[2])) + self.position[1]}\n" #distance:{distance} angle:{angle}\n" #TODO: Update with correct absolute coordinates
+            object_string = f"{int(row[0])} class:{object_class} x:{distance*math.cos(math.radians(angle) + self.position[2]) + self.position[0]} y:{distance*math.sin(math.radians(angle) + self.position[2]) + self.position[1]}\n" #distance:{distance} angle:{angle}\n" #TODO: Update with correct absolute coordinates
             # Concatenate string to Objects.info
             self._objects_info += object_string
         #print(self._objects_info)
