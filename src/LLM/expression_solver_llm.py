@@ -16,7 +16,7 @@ class LLMSolverPublisher(Node):
 		    durability=QoSDurabilityPolicy.VOLATILE,
 		    depth=1
 		)
-        self._img_subscriber = self.create_subscription(String, '/object_info', self._string_callback, qos_profile)
+        self._img_subscriber = self.create_subscription(String, '/objects_info', self._string_callback, qos_profile)
         self._llm = LLM_Solver()
         
     def _string_callback(self, String):
