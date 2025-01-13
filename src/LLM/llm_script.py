@@ -75,6 +75,7 @@ class LLM_Solver():
             self.temperature = llm_config.get('temperature',0)
             self.filter_prompt = llm_config.get('filter_prompt', self.default_filter_prompt)
             self.expression_query = llm_config.get('expression_query',self.default_expression_query)
+            self.thread_id = llm_config.get('thread_id','abc120')
         else:
             print(f'No file called {llm_config_path} in current directory. Setting default parameters')
             
@@ -83,6 +84,8 @@ class LLM_Solver():
             self.temperature = 0
             self.filter_prompt = self.default_filter_prompt
             self.expression_query = self.default_expression_query
+            self.thread_id = 'abc134'
+        print(self.system_prompt)
 
     def _init_llm(self):
         """
@@ -120,7 +123,7 @@ class LLM_Solver():
 
     
     def _call_model(self,state: MessagesState):
-         """
+        """
         Calls the LLM model with a given state and generates a response.
 
         Args:
@@ -129,7 +132,7 @@ class LLM_Solver():
         Returns:
             dict: A dictionary containing the generated response from the LLM model.
         """
-        chain = self.prompt | self.model
+        chain = self.prompt | self.llm
         response = chain.invoke(state)
         return {"messages": response}
 
@@ -165,19 +168,20 @@ class LLM_Solver():
         self.app = self.workflow.compile(checkpointer=memory)
 
     def _run(self, input_string):
-        config = {"configurable": {"thread_id": "abc125"}}
+        config = {"configurable": {"thread_id": f"{self.thread_id}"}}
         print('Object Info received')
         # Exit if user types 'exit'
         if self.expression_query.lower() == 'exit':
             print('Exiting Dialogue.')
             return
-        
-        input_messages = [HumanMessage(self.expression_query+'\n'+self.filter_prompt)]
+        print('You: '+self.expression_query+'\n'+self.filter_prompt+'\n Here is the sensor data to use to solve the 3D referring expression:'+input_string)
+        input_messages = [HumanMessage(self.expression_query+'\n'+self.filter_prompt+'\n Here is the sensor data to use to solve the 3D referring expression:'+input_string)]
         response = self.app.invoke({'messages': input_messages},config)
         print("\n\nResponse:",response['messages'][-1].content,'\n')
         filtered_string = response['messages'][-1].content
-
-        input_messages = [HumanMessage(self.expression_query+'\nFiltered Data Observed:\n'+filtered_string)]
+        
+        print('You: '+self.expression_query+'\nFiltered Data Observed:\n'+filtered_string)
+        input_messages = [HumanMessage(self.expression_query+'\nFiltered Data Observed:\n'+filtered_string+'/nNow you can output Python code to calculate your response to assist your decision-making.')]
         response = self.app.invoke({'messages': input_messages},config)
         print("\n\nResponse:",response['messages'][-1].content,'\n')
 
