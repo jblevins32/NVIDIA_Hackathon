@@ -94,7 +94,7 @@ class ObjectsInfoPublisher(Node):
             #if len(distance) > 1:
             #    distance = distance[0]
             #TODO: Convert to string (See yolo world documentation v2)
-            object_class = int(row[1])
+            object_class = self._yolo_class(int(row[1]))
             # ID Class Confidence x_world y_world z_world
             # Calculate world coordinates and append to objects info
             object_string = f"{int(row[0])} class:{object_class} x:{distance*math.cos(math.radians(angle + self.position[2])) + self.position[0]} y:{distance*math.sin(math.radians(angle + self.position[2])) + self.position[1]}\n" #distance:{distance} angle:{angle}\n" #TODO: Update with correct absolute coordinates
@@ -116,9 +116,10 @@ class ObjectsInfoPublisher(Node):
         if completion_status._data == True:
             # Send objects_info string to the LLMSolverPublisher
             # Concetante turtlebot position in world
-            self._objects_info += f"\n-1 Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n"
+            final_string = self._objects_info
+            final_string += f"\n-1 Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n"
             # Trim Whitespace
-            stripped = self._objects_info.strip()
+            stripped = final_string.strip()
             msg = String()
             msg.data = stripped
             self._objects_info_publisher.publish(msg)
@@ -129,7 +130,89 @@ class ObjectsInfoPublisher(Node):
         return (pixel - 160) / 160 * 31.1
     
     def _yolo_class(self, class_id):
-        class_str = "human"
+        class_dict = {
+            0: "person",
+            1: "bicycle",
+            2: "car",
+            3: "motorcycle",
+            4: "airplane",
+            5: "bus",
+            6: "train",
+            7: "truck",
+            8: "boat",
+            9: "traffic light",
+            10: "fire hydrant",
+            11: "stop sign",
+            12: "parking meter",
+            13: "bench",
+            14: "bird",
+            15: "cat",
+            16: "dog",
+            17: "horse",
+            18: "sheep",
+            19: "cow",
+            20: "elephant",
+            21: "bear",
+            22: "zebra",
+            23: "giraffe",
+            24: "backpack",
+            25: "umbrella",
+            26: "handbag",
+            27: "tie",
+            28: "suitcase",
+            29: "frisbee",
+            30: "skis",
+            31: "snowboard",
+            32: "sports ball",
+            33: "kite",
+            34: "baseball bat",
+            35: "baseball glove",
+            36: "skateboard",
+            37: "surfboard",
+            38: "tennis racket",
+            39: "bottle",
+            40: "wine glass",
+            41: "cup",
+            42: "fork",
+            43: "knife",
+            44: "spoon",
+            45: "bowl",
+            46: "banana",
+            47: "apple",
+            48: "sandwich",
+            49: "orange",
+            50: "broccoli",
+            51: "carrot",
+            52: "hot dog",
+            53: "pizza",
+            54: "donut",
+            55: "cake",
+            56: "chair",
+            57: "couch",
+            58: "potted plant",
+            59: "bed",
+            60: "dining table",
+            61: "toilet",
+            62: "tv",
+            63: "laptop",
+            64: "mouse",
+            65: "remote",
+            66: "keyboard",
+            67: "cell phone",
+            68: "microwave",
+            69: "oven",
+            70: "toaster",
+            71: "sink",
+            72: "refrigerator",
+            73: "book",
+            74: "clock",
+            75: "vase",
+            76: "scissors",
+            77: "teddy bear",
+            78: "hair drier",
+            79: "toothbrush",
+        }
+        class_str = class_dict[class_id]
         return class_str
 
 def main(args=None):
