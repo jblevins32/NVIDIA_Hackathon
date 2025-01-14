@@ -28,7 +28,7 @@ from std_msgs.msg import Bool
 class ObjectsInfoPublisher(Node):
 
     def __init__(self):
-        super().__init__('colored_object_finder')
+        super().__init__('objects_info_publisher')
 
         # Initialize QoS profiles for different message types
         yolo_qos_profile = QoSProfile(
