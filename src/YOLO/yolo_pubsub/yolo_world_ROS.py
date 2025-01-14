@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 import torch
-from get_data import GetData
+from yolo_pubsub.get_data import GetData
 import numpy as np
 import cv2
 
