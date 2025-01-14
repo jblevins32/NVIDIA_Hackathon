@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'objects_to_llm = objects_to_llm.objects_to_llm:main'
         ],
     },
 )
