@@ -88,7 +88,7 @@ class ObjectsInfoPublisher(Node):
         #num_objects = bbox_array.shape[0]# Number of objects from yolo
         for row in bbox_array:
             # Translate bounding box center in pixel space to a local angle
-            angle = self._pixel_to_deg((row[3] + row[5])/2)
+            angle = self._pixel_to_deg((row[3] + row[5])/2*320)
             # Perform interpolation to get distance for detected objects
             distance = np.interp(angle, self._angles, self._ranges)
             #if len(distance) > 1:
