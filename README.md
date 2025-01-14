@@ -19,6 +19,20 @@ This project investigates robot task completion using 3D referring expressions. 
 **ROS2:** For robotic system integration and control.
 **Python:** For scripting and pipeline development.
 
+## How to Use
+1. Connect local PC and Turtlebot to same network
+2. On Turtlebot, run base turtlebot package
+  - `export TURTLEBOT3_MODEL=burger`
+  - `ros2 launch turtlebot3_bringup robot.launch.py`
+3. Run camera node on Turtlebot
+  - `ros2 run py_pubsub talker`
+4. Run YOLO node on local PC
+  - `ros2 run yolo_pubsub subscriber`
+5. Run obect to data node on local PC
+  - `ros2 run objects_to_llm objects_to_llm`
+6. Run LLM inference in src/LLM
+  - `python3 llm_script.py`
+
 # File Structure:
 - `src`: Source code
   - `LAPD`: Sensor processing node publishing on /objects_to_llm
