@@ -38,6 +38,9 @@ This project investigates robot task completion using 3D referring expressions. 
   - `LAPD`: Sensor processing node publishing on /objects_to_llm
   - `LLM`: Large language model script for refering expression output
   - `ROS`: Classic ROS sensor nodes
+    - `camera_subscriber`: Used. Camera node
+    - `laser_subscriber`: Not used. LIDAR node
+    - `odom_subscriber`: Not used. Odomotry node
   - `YOLO`: You only look once model for object tracking
     - `imgs`: images to process and saved images are all stored here
     - `models`: YOLO models (.pt files)
