@@ -68,12 +68,9 @@ class ObjectsInfoPublisher(Node):
         self._angles = None
         self._ranges = None
         self.position = [0,0,0]
-        # self._odom_offset = None
-
+        
     # Callback to update the robot's current position
     def _odom_callback(self, odom):
-        
-        #x y z angle(deg)
         x = odom.pose.pose.position.x
         y = odom.pose.pose.position.y
         z_angle = odom.pose.pose.orientation.z
@@ -91,9 +88,7 @@ class ObjectsInfoPublisher(Node):
             angle = self._pixel_to_deg((row[3] + row[5])/2*320)
             # Perform interpolation to get distance for detected objects
             distance = np.interp(angle, self._angles, self._ranges)
-            #if len(distance) > 1:
-            #    distance = distance[0]
-            #TODO: Convert to string (See yolo world documentation v2)
+            #Convert class id to string
             object_class = self._yolo_class(int(row[1]))
             # ID Class Confidence x_world y_world z_world
             # Calculate world coordinates and append to objects info
