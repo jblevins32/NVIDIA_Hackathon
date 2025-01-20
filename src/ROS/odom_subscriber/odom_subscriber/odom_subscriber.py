@@ -24,7 +24,7 @@ class OdomSubscriber(Node):
         self.subscription
 
     def listener_callback(self, msg: Odometry):
-        #self.get_logger().info('Laserscan Received')
+        self.get_logger().info('Odom Received')
         #self.get_logger().info(f"Range data: {msg.ranges[:5]}")
         position = msg.pose.pose.position
         

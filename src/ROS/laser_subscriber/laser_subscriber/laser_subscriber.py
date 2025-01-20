@@ -25,7 +25,7 @@ class LaserScanSubscriber(Node):
         self.subscription
 
     def listener_callback(self, msg: LaserScan):
-        #self.get_logger().info('Laserscan Received')
+        self.get_logger().info('Laserscan Received')
         #self.get_logger().info(f"Range data: {msg.ranges[:5]}")
         scan_current = msg
         
