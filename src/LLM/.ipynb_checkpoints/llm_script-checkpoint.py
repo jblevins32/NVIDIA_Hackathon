@@ -3,8 +3,8 @@ import os
 import traceback
 from io import StringIO
 from contextlib import redirect_stdout
+import random
 
-import os
 import langchain
 from langchain_ollama import ChatOllama
 from langchain.chains import LLMChain
@@ -56,6 +56,58 @@ class LLM_Solver():
             config = yaml.safe_load(file)
         return config
 
+    def _get_thread_id(self,file_path):
+        """
+        Retrieves and updates the thread_id based on the configuration file.
+    
+        If the thread_id is 'random', it generates a new random thread_id.
+        If the thread_id is 'same', it reuses the last saved thread_id.
+        
+        Args:
+            file_path (str): The path to the YAML configuration file.
+    
+        Returns:
+            str: The thread_id as a string.
+        """
+        try:
+            # Load the YAML file
+            with open(file_path, 'r') as file:
+                config = yaml.safe_load(file)
+            
+            # Check if the thread_id is set to "random" or "same"
+            if 'thread_id' not in config:
+                raise KeyError("thread_id parameter not found in the configuration file.")
+            
+            if config['thread_id'] == 'random':
+                # Generate a new random thread_id (integer converted to string)
+                new_thread_id = str(random.randint(1000, 9999))  # Adjust range as needed
+                config['thread_id'] = new_thread_id
+            elif config['thread_id'] == 'same':
+                # Use the last used thread_id (which should already be in the file)
+                if 'last_thread_id' not in config:
+                    raise KeyError("last_thread_id parameter not found for 'same' thread_id.")
+                new_thread_id = config['last_thread_id']
+            else:
+                raise ValueError("Invalid value for thread_id. It should be 'random' or 'same'.")
+            
+            # Save the updated YAML file
+            with open(file_path, 'w') as file:
+                yaml.safe_dump(config, file)
+            
+            # Store the new thread_id as the last used thread_id for future reference
+            config['last_thread_id'] = new_thread_id
+            with open(file_path, 'w') as file:
+                yaml.safe_dump(config, file)
+            
+            print(f"Using thread_id: {new_thread_id}")
+            return new_thread_id
+        
+        except (yaml.YAMLError, FileNotFoundError) as e:
+            print(f"Error reading YAML file: {e}")
+        except (KeyError, ValueError) as e:
+            print(f"Error updating thread_id: {e}")
+
+
     def _get_config(self):
         """
         Loads the configuration for the LLM. This includes loading the system prompt, model name, and temperature from
@@ -75,7 +127,7 @@ class LLM_Solver():
             self.temperature = llm_config.get('temperature',0)
             self.filter_prompt = llm_config.get('filter_prompt', self.default_filter_prompt)
             self.expression_query = llm_config.get('expression_query',self.default_expression_query)
-            self.thread_id = llm_config.get('thread_id','abc120')
+            self.thread_id = self._get_thread_id(llm_config_path)
         else:
             print(f'No file called {llm_config_path} in current directory. Setting default parameters')
             
@@ -167,7 +219,7 @@ class LLM_Solver():
         memory = MemorySaver()
         self.app = self.workflow.compile(checkpointer=memory)
 
-    def _run(self, input_string):
+    def run(self, input_string):
         config = {"configurable": {"thread_id": f"{self.thread_id}"}}
         print('Object Info received')
         # Exit if user types 'exit'

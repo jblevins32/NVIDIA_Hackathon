@@ -8,7 +8,7 @@ from std_msgs.msg import String
 class LLMSolverPublisher(Node):
 
     def __init__(self):
-        super().__init__('example_publisher')
+        super().__init__('expression_solver_llm')
 
         qos_profile = QoSProfile(
 		    reliability=QoSReliabilityPolicy.BEST_EFFORT,

@@ -64,16 +64,14 @@ class ObjectsInfoPublisher(Node):
         self.lidar_subscriber = self.create_subscription(LaserScan, '/scan', self._LIDAR_callback, lidar_qos_profile)
         self.completion_subscriber = self.create_subscription(Bool, '/teleop_completed', self._completion_callback, completion_qos_profile)
         self._objects_info_publisher = self.create_publisher(String,'/objects_info', 5)
-        self._objects_info = ""
+        self._objects_info_string = ""
+        self._objects_info = np.empty((0,5))
         self._angles = None
         self._ranges = None
         self.position = [0,0,0]
-        # self._odom_offset = None
-
+        
     # Callback to update the robot's current position
     def _odom_callback(self, odom):
-        
-        #x y z angle(deg)
         x = odom.pose.pose.position.x
         y = odom.pose.pose.position.y
         z_angle = odom.pose.pose.orientation.z
@@ -81,26 +79,41 @@ class ObjectsInfoPublisher(Node):
         #print(self.position)
 
     def _yolo_callback(self, boxes):
+        if self._angles is None:
+            return
         #ID Classification Confidence Top_left_x top_left_y bot_right_x bot_right_y
         # Process YOLO data and correlate with LIDAR data
         num_cols = 7
         bbox_array = np.array(boxes.data).reshape(-1, num_cols)
         #num_objects = bbox_array.shape[0]# Number of objects from yolo
         for row in bbox_array:
+            obj_id = int(row[0])
             # Translate bounding box center in pixel space to a local angle
             angle = self._pixel_to_deg((row[3] + row[5])/2*320)
             # Perform interpolation to get distance for detected objects
             distance = np.interp(angle, self._angles, self._ranges)
-            #if len(distance) > 1:
-            #    distance = distance[0]
-            #TODO: Convert to string (See yolo world documentation v2)
+            #Convert class id to string
             object_class = self._yolo_class(int(row[1]))
             # ID Class Confidence x_world y_world z_world
             # Calculate world coordinates and append to objects info
-            object_string = f"id:{int(row[0])} class:{object_class} x:{distance*math.cos(math.radians(angle) + self.position[2]) + self.position[0]} y:{distance*math.sin(math.radians(angle) + self.position[2]) + self.position[1]}\n" #distance:{distance} angle:{angle}\n" #TODO: Update with correct absolute coordinates
-            # Concatenate string to Objects.info
-            self._objects_info += object_string
-        #print(self._objects_info)
+            x = distance*math.cos(math.radians(angle) + self.position[2]) + self.position[0]
+            y = distance*math.sin(math.radians(angle) + self.position[2]) + self.position[1]
+            new_object = np.array([row[0], row[1], row[2], x, y])
+            duplicate_found = False
+            for obj in self._objects_info:
+                if obj[1] == row[1]: #Check if same class
+                    threshold = 0.03 #Threshold distance in meters
+                    duplicate_distance = np.sqrt((x - obj[3])**2 + (y - obj[4])**2)
+                    if duplicate_distance <= threshold:
+                        if row[2] > obj[2]:
+                            obj[2] = row[2]
+                        duplicate_found = True
+                        break
+            if duplicate_found:
+                continue
+            self._objects_info = np.vstack((self._objects_info, new_object))
+            object_string = f"id:{obj_id} class:{object_class} confidence:{row[2]} x:{x} y:{y}\n"
+            self._objects_info_string += object_string
 
     # Process LIDAR data and filter out NaN values
     def _LIDAR_callback(self, scan):
@@ -116,8 +129,8 @@ class ObjectsInfoPublisher(Node):
         if completion_status._data == True:
             # Send objects_info string to the LLMSolverPublisher
             # Concetante turtlebot position in world
-            final_string = self._objects_info
-            final_string += f"\n-1 Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n"
+            final_string = self._objects_info_string
+            final_string += f"\nid:-1 class:Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n"
             # Trim Whitespace
             stripped = final_string.strip()
             msg = String()

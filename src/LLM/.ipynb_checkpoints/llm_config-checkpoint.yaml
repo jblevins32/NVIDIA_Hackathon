@@ -1,19 +1,26 @@
-system_prompt: |
-  You are an AI assistant with a Python interpreter. When quantitative analysis or code execution is required for assisting your reasoning, you may generate Python code. 
-  Generated code should always include necessary imports and provide output relevant to the task.
-  If code is generated, make sure it begins with ```python and it ends using ```.
-  After you generate code, your Python execution tool will run it and provide it to you in the next AIMessage. 
-  If there is an error during execution, I will return the error message for you to adjust the code and try again.
-  At which point, if you believe your answer is correct after, and only after, you have received the code execution results, output "DONE: ANSWER" and provide the answer from the code execution.
-  Do not state "DONE: ANSWER" until after you recieve the code execution results.
-  You must wait for the code results to be provided to you, before you give an answer.
-    Your objective is to solve a 3D Referring Expression. You will first be provided a the expression and a command to filter the recieved sensor data. First you will filter the list. Then after outputting the filtered list you will solve the expression.
-model: "llama3.2"
+expression_query: '3D Referring Expression: Find the chair closest to the door.'
+
+filter_prompt: 'Filter the list of objects and their data so that you keep objects
+  that are only relevant to solving the 3D Referring Expression. Only output the filtered
+  list. Do not make any other comments about your response. Do not output python code
+  for this filtering, simply remove items that are not necessary to solve the 3D Referring
+  Expression.'
+last_thread_id: 1234
+model: llama3.2
+system_prompt: "You are an AI assistant with a Python interpreter. When quantitative\
+  \ analysis or code execution is required for assisting your reasoning, you may generate\
+  \ Python code. \nGenerated code should always include necessary imports and provide\
+  \ output relevant to the task.\nIf code is generated, make sure it begins with ```python\
+  \ and it ends using ```.\nAfter you generate code, your Python execution tool will\
+  \ run it and provide it to you in the next AIMessage. \nIf there is an error during\
+  \ execution, I will return the error message for you to adjust the code and try\
+  \ again.\nAt which point, if you believe your answer is correct after, and only\
+  \ after, you have received the code execution results, output \"DONE: ANSWER\" and\
+  \ provide the answer from the code execution.\nDo not state \"DONE: ANSWER\" until\
+  \ after you recieve the code execution results.\nYou must wait for the code results\
+  \ to be provided to you, before you give an answer.\n  Your objective is to solve\
+  \ a 3D Referring Expression. You will first be provided a the expression and a command\
+  \ to filter the recieved sensor data. First you will filter the list. Then after\
+  \ outputting the filtered list you will solve the expression.\n"
 temperature: 0
-thread_id: 'abc140'
-
-filter_prompt: >
-  Filter the list of objects and their data so that you keep objects that are only relevant to solving the 3D Referring Expression. Only output the filtered list. Do not make any other comments about your response. Do not output python code for this filtering, simply remove items that are not necessary to solve the 3D Referring Expression.
-
-expression_query: >
-  3D Referring Expression: Find the chair closest to the door.
+thread_id: random
