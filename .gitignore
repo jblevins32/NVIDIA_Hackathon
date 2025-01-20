@@ -1,4 +1,6 @@
 *.log
+#Ignore notebook output
+*0.2.27
 #Ignore compiled python bytecode
 *.pyc
 #ignore ROS ws
