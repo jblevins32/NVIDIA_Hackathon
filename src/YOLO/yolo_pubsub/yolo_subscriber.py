@@ -2,8 +2,10 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
+from std_msgs.msg import Float32MultiArray
 from cv_bridge import CvBridge, CvBridgeError
-from yolo_world_ROS import yolo
+from yolo_pubsub.yolo_world_ROS import yolo_cls
+import numpy as np
 
 # building the class which inherits from ROS2 node class
 class ImageSubscriber(Node):
@@ -21,16 +23,19 @@ class ImageSubscriber(Node):
         # Subscribe to image data topic
         self.subscription = self.create_subscription(
             Image, # message type
-            'image_data', # topic name
+            'image_raw', # topic name
             self.listener_callback, # function to execute when the node receives a message on this topic
             10 # Queue size
         )
         
+        self.publisher_data = self.create_publisher(Float32MultiArray, '/yolo_data', 10) # declare that this node publishes images over a topic \image_raw with a queue of 10. Must match subscriber!!
+        self.publisher_img = self.create_publisher(Image, '/yolo_img', 10) # declare that this node publishes images over a topic \image_raw with a queue of 10. Must match subscriber!!
+                            
         # initialize object for converting ROS img messages to viewable CV messages
         self.bridge = CvBridge()
         
         # Initialize YOLO model
-        self.yolo_obj = yolo
+        self.yolo_obj = yolo_cls()
         
     def listener_callback(self,msg):
         # Log a message that image is received
@@ -42,8 +47,18 @@ class ImageSubscriber(Node):
             cv_image = self.bridge.imgmsg_to_cv2(msg, 'bgr8') 
             
             # Run tracking and data logging on image
-            self.yolo_obj.YOLOrun(cv_image)
+            yolo_data, img = self.yolo_obj.YOLOrun(cv_image)
+            data_msg = Float32MultiArray()
+            data_msg.data = yolo_data.flatten().tolist()
+            print(data_msg.data)
+            ros_img = self.bridge.cv2_to_imgmsg(img, encoding="bgr8")
             
+            # Publish the data
+            self.publisher_data.publish(data_msg) # publish the message
+            self.publisher_img.publish(ros_img) # publish the image
+            self.get_logger().info('Publishing Yolo Data') # Log that I am publishing the image
+            
+
             # save image
             # cv2.imwrite('received_image.jpg', cv_image)  # Update this path
 
@@ -56,7 +71,7 @@ def main(args=None):
     
     image_subscriber = ImageSubscriber()
     
-    rclpy.sim(image_subscriber)
+    rclpy.spin(image_subscriber)
     
     image_subscriber.destroy_node()
     rclpy.shutdown()

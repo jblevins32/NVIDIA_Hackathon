@@ -1,9 +1,10 @@
 from ultralytics import YOLO
 import torch
-from get_data import GetData
+from yolo_pubsub.get_data import GetData
 import numpy as np
+import cv2
 
-class yolo():
+class yolo_cls():
     '''
     This class:
     1) Instaniates YOLO model
@@ -22,7 +23,7 @@ class yolo():
         self.data_obj = GetData()
         
         # Load the YOLOv8 model
-        self.model = YOLO('src/YOLO/models/yolov8s-worldv2.pt')
+        self.model = YOLO('YOLO/models/yolov8s-worldv2.pt')
 
     def YOLOrun(self, img):
         '''
@@ -30,7 +31,16 @@ class yolo():
         '''
         # Run the model on a list JPG images. Live feed will replace this list and loop
         results = self.model.track(img)
-        self.ID_list = self.data_obj.AddGetData(results = results, ID_list= self.ID_list)
+        if results[0].boxes.id is not None:
+            self.ID_list = self.data_obj.AddGetData(results = results, ID_list= self.ID_list)
+        else:
+            print('No objects detected')
 
-        # Save results
+        # Save data results
         np.savetxt('src/YOLO/output_data/bbox_data.txt', self.ID_list, fmt='%f')
+        
+        # Save images
+        output_image = results[0].plot()
+        cv2.imwrite('src/YOLO/imgs/output_image.jpg', output_image)
+        
+        return self.ID_list, output_image
