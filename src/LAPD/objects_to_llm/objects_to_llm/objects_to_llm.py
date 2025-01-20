@@ -89,7 +89,7 @@ class ObjectsInfoPublisher(Node):
         for row in bbox_array:
             obj_id = int(row[0])
             # Translate bounding box center in pixel space to a local angle
-            angle = self._pixel_to_deg((row[3] + row[5])/2*320)
+            angle = self._pixel_to_deg((row[3] + row[5])/2)
             # Perform interpolation to get distance for detected objects
             distance = np.interp(angle, self._angles, self._ranges)
             #Convert class id to string
@@ -140,7 +140,7 @@ class ObjectsInfoPublisher(Node):
 
     # Convert pixel position to angle in degrees
     def _pixel_to_deg(self, pixel):
-        return (pixel - 160) / 160 * 31.1
+        return (pixel - 0.5) * 54 #Pi Camera v1 is 54degree angle of view
     
     def _yolo_class(self, class_id):
         class_dict = {
