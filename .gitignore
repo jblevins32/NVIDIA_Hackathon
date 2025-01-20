@@ -1,5 +1,6 @@
 *.log
-
+#Ignore compiled python bytecode
+*.pyc
 #ignore ROS ws
 temp/
 build/
