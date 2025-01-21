@@ -24,8 +24,8 @@ This project investigates robot task completion using 3D referring expressions. 
 2. On Turtlebot, run base turtlebot package
   - `export TURTLEBOT3_MODEL=burger`
   - `ros2 launch turtlebot3_bringup robot.launch.py`
-3. Run camera node on Turtlebot
-  - `ros2 run py_pubsub talker`
+3. Run camera node on Turtlebot (or on local PC for testing with webcam)
+  - `ros2 run camera_subscriber talker`
 4. Run YOLO node on local PC
   - `ros2 run yolo_pubsub subscriber`
 5. Run obect to data node on local PC

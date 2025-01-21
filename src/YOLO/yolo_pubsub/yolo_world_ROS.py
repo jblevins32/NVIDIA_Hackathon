@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 import torch
-from yolo_pubsub.get_data import GetData
+from get_data import GetData
 import numpy as np
 import cv2
 
@@ -41,6 +41,6 @@ class yolo_cls():
         
         # Save images
         output_image = results[0].plot()
-        cv2.imwrite('src/YOLO/imgs/output_image.jpg', output_image)
+        # cv2.imwrite('src/YOLO/imgs/output_image.jpg', output_image)
         
         return self.ID_list, output_image
