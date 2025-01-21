@@ -1,14 +1,14 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSReliabilityPolicy, QoSHistoryPolicy
-from llm_script.py import LLM_Solver
+from llm_script import LLM_Solver
 
 from std_msgs.msg import String
 
 class LLMSolverPublisher(Node):
 
     def __init__(self):
-        super().__init__('example_publisher')
+        super().__init__('expression_solver_llm')
 
         qos_profile = QoSProfile(
 		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
@@ -16,11 +16,24 @@ class LLMSolverPublisher(Node):
 		    durability=QoSDurabilityPolicy.VOLATILE,
 		    depth=1
 		)
-        self._img_subscriber = self.create_subscription(String, '/object_info', self._string_callback, qos_profile)
+
+        query_qos_profile = QoSProfile(
+		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
+		    history=QoSHistoryPolicy.KEEP_LAST,
+		    durability=QoSDurabilityPolicy.VOLATILE,
+		    depth=1
+		)
+
+        self._img_subscriber = self.create_subscription(String, '/objects_info', self._string_callback, qos_profile)
+        self._query_subscriber = self.create_subscription(String, '/expression_query', self._query_callback, query_qos_profile)
+        self._query = ""
         self._llm = LLM_Solver()
         
     def _string_callback(self, String):
-        self._llm.run(String.data)
+        self._llm.run(String.data, self._query)
+
+    def _query_callback(self, query):
+        self._query = query.data
 
 
 def main(args=None):

@@ -406,11 +406,13 @@ class LLM_Solver():
         filter_memory = MemorySaver()
         self.filter_app = self.filter_workflow.compile(checkpointer=filter_memory)
 
-    def run(self, input_string):
+    def run(self, input_string, expression_query):
         config = {"configurable": {"thread_id": f"{self.thread_id}"}}
         filter_config = {"configurable": {"thread_id": f"{random.randint(1000, 9999)}"}} 
         print('Object Info received')
         # Exit if user types 'exit'
+        if expression_query != "":
+            self.expression_query = expression_query
         if self.expression_query.lower() == 'exit':
             print('Exiting Dialogue.')
             return
