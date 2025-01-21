@@ -4,6 +4,7 @@ from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSReliabilityPolicy, QoS
 from llm_script import LLM_Solver
 
 from std_msgs.msg import String
+from std_msgs.msg import Bool
 
 class LLMSolverPublisher(Node):
 
@@ -26,6 +27,7 @@ class LLMSolverPublisher(Node):
 
         self._img_subscriber = self.create_subscription(String, '/objects_info', self._string_callback, qos_profile)
         self._query_subscriber = self.create_subscription(String, '/expression_query', self._query_callback, query_qos_profile)
+        self._ready_publisher = self.create_publisher(Bool, '/teleop_completed', qos_profile)
         self._query = ""
 
         self._llm = LLM_Solver()
@@ -35,6 +37,10 @@ class LLMSolverPublisher(Node):
 
     def _query_callback(self, query):
         self._query = query.data
+        msg = Bool()
+        msg.data = True
+        self._ready_publisher.publish(msg)
+
 
 
 def main(args=None):
