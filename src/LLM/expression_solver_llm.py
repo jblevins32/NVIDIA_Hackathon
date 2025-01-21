@@ -16,11 +16,25 @@ class LLMSolverPublisher(Node):
 		    durability=QoSDurabilityPolicy.VOLATILE,
 		    depth=1
 		)
+
+        query_qos_profile = QoSProfile(
+		    reliability=QoSReliabilityPolicy.BEST_EFFORT,
+		    history=QoSHistoryPolicy.KEEP_LAST,
+		    durability=QoSDurabilityPolicy.VOLATILE,
+		    depth=1
+		)
+
         self._img_subscriber = self.create_subscription(String, '/objects_info', self._string_callback, qos_profile)
+        self._query_subscriber = self.create_subscription(String, '/expression_query', self._query_callback, query_qos_profile)
+        self._query = ""
+
         self._llm = LLM_Solver()
         
     def _string_callback(self, String):
-        self._llm.run(String.data)
+        self._llm.run(String.data, self._query)
+
+    def _query_callback(self, query):
+        self._query = query.data
 
 
 def main(args=None):
