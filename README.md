@@ -19,8 +19,28 @@ This project investigates robot task completion using 3D referring expressions. 
 **ROS2:** For robotic system integration and control.
 **Python:** For scripting and pipeline development.
 
+## How to Use
+1. Connect local PC and Turtlebot to same network
+2. On Turtlebot, run base turtlebot package
+  - `export TURTLEBOT3_MODEL=burger`
+  - `ros2 launch turtlebot3_bringup robot.launch.py`
+3. Run camera node on Turtlebot (or on local PC for testing with webcam)
+  - `ros2 run camera_subscriber talker`
+4. Run YOLO node on local PC
+  - `ros2 run yolo_pubsub subscriber`
+5. Run obect to data node on local PC
+  - `ros2 run objects_to_llm objects_to_llm`
+6. Run LLM inference in src/LLM
+  - `python3 llm_script.py`
+
 # File Structure:
 - `src`: Source code
+  - `LAPD`: Sensor processing node publishing on /objects_to_llm
+  - `LLM`: Large language model script for refering expression output
+  - `ROS`: Classic ROS sensor nodes
+    - `camera_subscriber`: Used. Camera node
+    - `laser_subscriber`: Not used. LIDAR node
+    - `odom_subscriber`: Not used. Odomotry node
   - `YOLO`: You only look once model for object tracking
     - `imgs`: images to process and saved images are all stored here
     - `models`: YOLO models (.pt files)
@@ -30,7 +50,4 @@ This project investigates robot task completion using 3D referring expressions. 
     - `yolo_subscriber.py`: Subscriber node to run YOLO tracking (runs yolo_world_ROS.py)
     - `yolo_world.py`: Main script for general inference, data collection, and visualization
     - `yolo_world_ROS.py`: Main script for ROS implementation for inference and data collection
-  - `Other sub folder`:
-  - `Other sub folder`:
-  - `Other sub folder`:
 - `environment.yaml`: environment for running the code. Not sure if we need this.

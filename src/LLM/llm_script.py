@@ -218,8 +218,13 @@ class LLM_Solver():
             - temperature: The temperature for the LLM, controlling randomness of outputs.
         """
         llm_config_path = "llm_config.yaml"
-        if os.path.exists(llm_config_path):
-            llm_config = self._load_yaml_config(llm_config_path)
+        # Get the directory of the current script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Construct the full path to the YAML file
+        yaml_path = os.path.join(script_dir, llm_config_path)
+        if os.path.exists(yaml_path):
+            llm_config = self._load_yaml_config(yaml_path)
         
             self.system_prompt = llm_config.get('system_prompt', self.default_system_prompt)
             self.model = llm_config.get('model', 'llama3.2')
@@ -416,11 +421,12 @@ class LLM_Solver():
         if self.expression_query.lower() == 'exit':
             print('Exiting Dialogue.')
             return
-        
+
         input_messages = [HumanMessage(self.expression_query+'\n'+self.filter_prompt+'\n Here is the sensor data to use to solve the 3D referring expression:'+input_string)]
         print(f"You: {input_messages[-1].content}")
         
         response = self.filter_app.invoke({'messages': input_messages},filter_config)
+
         print("\n\nResponse:",response['messages'][-1].content,'\n')
         filtered_string = response['messages'][-1].content
         

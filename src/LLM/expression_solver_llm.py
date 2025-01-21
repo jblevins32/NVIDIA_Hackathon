@@ -27,6 +27,7 @@ class LLMSolverPublisher(Node):
         self._img_subscriber = self.create_subscription(String, '/objects_info', self._string_callback, qos_profile)
         self._query_subscriber = self.create_subscription(String, '/expression_query', self._query_callback, query_qos_profile)
         self._query = ""
+
         self._llm = LLM_Solver()
         
     def _string_callback(self, String):
