@@ -20,6 +20,7 @@ class LLMQueryPublisher(Node):
         
     def publish_query(self, query):
         msg = String()
+        print("SENDING QUERY")
         msg.data = query
         self._query_publisher.publish(msg)
 
@@ -32,7 +33,7 @@ def main(args=None):
     try:
         while rclpy.ok():
             rclpy.spin_once(llm_query_publisher, timeout_sec=0.1)
-            user_input = input("Enter your expression query (type 'exit' or 'quit' to exit): ")
+            user_input = input("Enter your expression query (type 'exit' or 'quit' to exit):\n")
             if user_input.lower() in ['exit', 'quit']:
                 print("Exiting the node.")
                 break
