@@ -11,3 +11,4 @@ log/
 ~/
 realsense.py
 src/YOLO/yolo_pubsub/__pycache__/yolo_world_ROS.cpython-310.pyc
+src/LLM/0.2.27
