@@ -164,7 +164,7 @@ class ObjectsInfoPublisher(Node):
 
     # Convert pixel position to angle in degrees
     def _pixel_to_deg(self, pixel):
-        return (pixel - 160) / 160 * 31.1
+        return (pixel - 160) / 160 * 34.7 #31.1 pi camera
     
     def _yolo_class(self, class_id):
         class_dict = {
