@@ -14,7 +14,7 @@ class ImagePublisher(Node):
         timer_period = 1/60  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback) # creating a timer to call the timer_callback at a specific interval
         self.bridge = CvBridge() # bridges the gap between ROS images and OpenCV images
-        self.cap = cv2.VideoCapture(0) # create a video capture object for camera 0
+        self.cap = cv2.VideoCapture(2) # create a video capture object for camera 0
 
     def timer_callback(self):
         ret, frame = self.cap.read()
