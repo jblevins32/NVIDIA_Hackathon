@@ -25,7 +25,7 @@ class ImageSubscriber(Node):
             cv_image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')  
             
             # show image
-            cv2.imshow('Received Image', cv_image)
+            #cv2.imshow('Received Image', cv_image)
             
             # save image
             # cv2.imwrite('received_image.jpg', cv_image)  # Update the path as needed

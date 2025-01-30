@@ -79,6 +79,7 @@ class ObjectsInfoPublisher(Node):
         #print(self.position)
 
     def _yolo_callback(self, boxes):
+        
         if self._angles is None:
             return
         #ID Classification Confidence Top_left_x top_left_y bot_right_x bot_right_y
@@ -88,6 +89,7 @@ class ObjectsInfoPublisher(Node):
         #num_objects = bbox_array.shape[0]# Number of objects from yolo
         for row in bbox_array:
             obj_id = int(row[0])
+            #print(row)
             # Translate bounding box center in pixel space to a local angle
             angle = self._pixel_to_deg((row[3] + row[5])/2*320)
             # Perform interpolation to get distance for detected objects
@@ -100,20 +102,38 @@ class ObjectsInfoPublisher(Node):
             y = distance*math.sin(math.radians(angle) + self.position[2]) + self.position[1]
             new_object = np.array([row[0], row[1], row[2], x, y])
             duplicate_found = False
+            #print(object_string)
             for obj in self._objects_info:
                 if obj[1] == row[1]: #Check if same class
-                    threshold = 0.03 #Threshold distance in meters
+                    threshold = 0.1 #Threshold distance in meters
                     duplicate_distance = np.sqrt((x - obj[3])**2 + (y - obj[4])**2)
+                    #print(duplicate_distance)
                     if duplicate_distance <= threshold:
-                        if row[2] > obj[2]:
+                        if row[2] > obj[2]: # If confidence is greater, replace
                             obj[2] = row[2]
+                            obj[3] = x
+                            obj[4] = y
                         duplicate_found = True
+                        #print("FOUND DUPLICATE")
                         break
             if duplicate_found:
                 continue
-            self._objects_info = np.vstack((self._objects_info, new_object))
-            object_string = f"id:{obj_id} class:{object_class} confidence:{row[2]} x:{x} y:{y}\n"
-            self._objects_info_string += object_string
+            else:
+                self._objects_info = np.vstack((self._objects_info, new_object))
+            #object_string = f"id:{obj_id} class:{object_class} confidence:{row[2]} x:{x} y:{y}\n"
+            #self._objects_info_string += object_string
+            #print(f"Objects in local map:\n{self._objects_info_string}\nid:-1 class:Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n")
+            #print(self._objects_info_string)
+        print("Objects in local map:\n")
+        self._print_local_map()
+
+    def _print_local_map(self):
+        local_map_str = ""
+        for obj in self._objects_info:
+            local_map_str += f"id:{obj[0]:.0f} class:{self._yolo_class(obj[1])} confidence:{obj[2]:.4f} x:{obj[3]:.4f} y:{obj[4]:.4f}\n"
+        local_map_str += f"\nid:-1 class:Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{math.degrees(self.position[2])}\n"
+        print(local_map_str)
+        return local_map_str
 
     # Process LIDAR data and filter out NaN values
     def _LIDAR_callback(self, scan):
@@ -126,11 +146,13 @@ class ObjectsInfoPublisher(Node):
 
     # Publish the objects info once teleop is completed
     def _completion_callback(self, completion_status):
+        print("RECEIVED COMPLETION CALLBACK")
         if completion_status._data == True:
             # Send objects_info string to the LLMSolverPublisher
             # Concetante turtlebot position in world
-            final_string = self._objects_info_string
-            final_string += f"\nid:-1 class:Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n"
+            #final_string = self._objects_info_string
+            #final_string += f"\nid:-1 class:Turtlebot x:{self.position[0]} y:{self.position[1]} angle:{self.position[2]}\n"
+            final_string = self._print_local_map()
             # Trim Whitespace
             stripped = final_string.strip()
             msg = String()

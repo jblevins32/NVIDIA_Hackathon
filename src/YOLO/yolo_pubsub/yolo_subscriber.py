@@ -55,8 +55,8 @@ class ImageSubscriber(Node):
             yolo_data, img = self.yolo_obj.YOLOrun(cv_image)
             
             # Filter based on confidence
-            keep_idx = yolo_data[:,2] > self.conf_threshold
-            yolo_data = yolo_data[keep_idx]
+            # keep_idx = yolo_data[:,2] > self.conf_threshold
+            #yolo_data = yolo_data[keep_idx]
             print(f'{yolo_data.shape[0]} object(s) found')
 
             data_msg = Float32MultiArray()
@@ -70,8 +70,8 @@ class ImageSubscriber(Node):
             self.get_logger().info('Publishing Yolo Data') # Log that I am publishing the image
             
             # Show the image
-            cv2.imshow('Received Image', img)
-            cv2.waitKey(1)  # Add a small delay to allow the image to be displayed
+            #cv2.imshow('Received Image', img)
+            #cv2.waitKey(1)  # Add a small delay to allow the image to be displayed
 
             # save image
             # cv2.imwrite('received_image.jpg', cv_image)  # Update this path

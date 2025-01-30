@@ -30,7 +30,7 @@ class yolo_cls():
         Run the yolo model on the incoming image and get the data    
         '''
         # Run the model on a list JPG images. Live feed will replace this list and loop
-        results = self.model.track(img)
+        results = self.model.track(img, persist=True)
         if results[0].boxes.id is not None:
             self.ID_list = self.data_obj.AddGetData(results = results, ID_list= self.ID_list)
         else:

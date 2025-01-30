@@ -27,7 +27,7 @@ class LLMSolverPublisher(Node):
 
         self._img_subscriber = self.create_subscription(String, '/objects_info', self._string_callback, qos_profile)
         self._query_subscriber = self.create_subscription(String, '/expression_query', self._query_callback, query_qos_profile)
-        self._ready_publisher = self.create_publisher(Bool, '/teleop_completed', qos_profile)
+        self._llm_ready_publisher = self.create_publisher(Bool, 'teleop_completed', qos_profile)
         self._query = ""
 
         self._llm = LLM_Solver()
@@ -36,10 +36,11 @@ class LLMSolverPublisher(Node):
         self._llm.run(String.data, self._query)
 
     def _query_callback(self, query):
+        print("RECIEVED QUERY")
         self._query = query.data
         msg = Bool()
         msg.data = True
-        self._ready_publisher.publish(msg)
+        self._llm_ready_publisher.publish(msg)
 
 
 
