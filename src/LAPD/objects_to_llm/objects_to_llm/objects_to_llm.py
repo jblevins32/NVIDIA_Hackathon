@@ -88,6 +88,8 @@ class ObjectsInfoPublisher(Node):
         bbox_array = np.array(boxes.data).reshape(-1, num_cols)
         #num_objects = bbox_array.shape[0]# Number of objects from yolo
         for row in bbox_array:
+            if row[2] <= 0.25:
+                continue
             obj_id = int(row[0])
             #print(row)
             # Translate bounding box center in pixel space to a local angle
